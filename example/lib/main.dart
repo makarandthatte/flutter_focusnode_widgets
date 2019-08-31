@@ -1,32 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:focusnode_widgets/focusnode_widgets.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(MenuForAndroidTV());
 
-/// This Widget is the main application widget.
-class MyApp extends StatelessWidget {
-  final String _title = 'focusnode_widgets example';
+class MenuForAndroidTV extends StatelessWidget {
+  final String _title = 'focusnode_widgets example for Android TV';
+  final String _instructions =
+      'Use up down arrows to navigate and Enter (OK) to open the URL';
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: _title,
-      home: Scaffold(
-        appBar: AppBar(title: Text(_title)),
-        body: MyStatefulWidget(),
-      ),
-    );
-  }
-}
-
-class MyStatefulWidget extends StatefulWidget {
-  MyStatefulWidget({Key key}) : super(key: key);
-
-  @override
-  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
-}
-
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
@@ -53,11 +34,21 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
     Center center = Center(child: column);
 
-    DefaultTextStyle defaultTextStyle = DefaultTextStyle(
+    DefaultTextStyle menu = DefaultTextStyle(
       style: textTheme.display1,
       child: center,
     );
 
-    return defaultTextStyle;
+    DefaultTextStyle instructions =
+        DefaultTextStyle(style: textTheme.display1, child: Text(_instructions));
+
+    return MaterialApp(
+      title: _title,
+      home: Scaffold(
+        appBar: AppBar(title: Text(_title)),
+        body: menu,
+        bottomSheet: instructions,
+      ),
+    );
   }
 }

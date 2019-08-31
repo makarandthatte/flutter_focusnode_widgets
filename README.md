@@ -1,6 +1,7 @@
 # focusnode_widgets
 
-Reusable focus node widgets. Can be controlled with touch screen or keyboard or Remote Control (e.g. Android TV).
+Reusable focus node widgets. Can be controlled with 
+keyboard or Remote Control (e.g. on Android TV).
 
 ## Getting Started
 
