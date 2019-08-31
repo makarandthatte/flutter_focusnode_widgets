@@ -7,9 +7,36 @@ import 'package:url_launcher/url_launcher.dart';
 class VerticalMenuForAndroidTV extends StatelessWidget {
   final List<VerticalMenuItem> menuItems;
 
+  final Color nonFocusedBackgroundColor;
+  final Color focusedBackgroundColor;
+  final AlignmentGeometry alignment;
+  final BoxConstraints constraints;
+  final Decoration nonFocusedBackgroundDecoration;
+  final Decoration focusedBackgroundDecoration;
+  final EdgeInsetsGeometry padding;
+  final Decoration nonFocusedForegroundDecoration;
+  final Decoration focusedForegroundDecoration;
+  final double width;
+  final double height;
+  final EdgeInsetsGeometry margin;
+  final Matrix4 transform;
+
   const VerticalMenuForAndroidTV({
     Key key,
     @required this.menuItems,
+    this.nonFocusedBackgroundColor,
+    this.focusedBackgroundColor,
+    this.alignment,
+    this.constraints,
+    this.nonFocusedBackgroundDecoration,
+    this.focusedBackgroundDecoration,
+    this.padding,
+    this.nonFocusedForegroundDecoration,
+    this.focusedForegroundDecoration,
+    this.width,
+    this.height,
+    this.margin,
+    this.transform,
   })  : assert(menuItems != null),
         assert(menuItems.length > 0),
         super(key: key);
@@ -18,8 +45,40 @@ class VerticalMenuForAndroidTV extends StatelessWidget {
   Widget build(BuildContext context) {
     assert(menuItems.elementAt(0).autoFocus);
 
+    List<_FocusNodeEnterTapActionableWidget>
+        _focusNodeEnterTapActionableWidgetList =
+        List<_FocusNodeEnterTapActionableWidget>();
+
+    void constructMenuItem(VerticalMenuItem menuItem) {
+      _FocusNodeEnterTapActionableWidget focusableEnterTapActionableWidget =
+          _FocusNodeEnterTapActionableWidget(
+        child: menuItem.getChildWidget(),
+        onEnterTapAction: menuItem.onEnterTapAction,
+        autoFocus: menuItem.autoFocus,
+        debugLabel: menuItem.debugLabel,
+        nonFocusedForegroundDecoration: nonFocusedForegroundDecoration,
+        transform: transform,
+        nonFocusedBackgroundColor: nonFocusedBackgroundColor,
+        focusedForegroundDecoration: focusedForegroundDecoration,
+        nonFocusedBackgroundDecoration: nonFocusedBackgroundDecoration,
+        height: height,
+        focusedBackgroundDecoration: focusedBackgroundDecoration,
+        focusedBackgroundColor: focusedBackgroundColor,
+        constraints: constraints,
+        width: width,
+        margin: margin,
+        padding: padding,
+        alignment: alignment,
+      );
+
+      _focusNodeEnterTapActionableWidgetList
+          .add(focusableEnterTapActionableWidget);
+    }
+
+    menuItems.forEach(constructMenuItem);
+
     Column column = Column(
-      children: menuItems,
+      children: _focusNodeEnterTapActionableWidgetList,
     );
 
     Center center = Center(child: column);
@@ -32,29 +91,34 @@ class VerticalMenuForAndroidTV extends StatelessWidget {
   }
 }
 
-enum FocusNodeWidgetType { hyperLinkWidget, checkBoxWidget }
+enum _FocusNodeWidgetType { hyperLinkWidget, checkboxListTileWidget }
 
-abstract class VerticalMenuItem extends StatelessWidget {
-  final FocusNodeWidgetType focusNodeWidgetType;
+abstract class VerticalMenuItem {
+  final _FocusNodeWidgetType focusNodeWidgetType;
   final bool autoFocus;
+  final String debugLabel;
 
-  const VerticalMenuItem(
-    this.focusNodeWidgetType, {
+  const VerticalMenuItem({
     Key key,
-    this.autoFocus = false,
+    @required this.focusNodeWidgetType,
+    @required this.autoFocus,
+    @required this.debugLabel,
   })  : assert(focusNodeWidgetType != null),
         assert(autoFocus != null),
-        super(key: key);
+        super();
+
+  void onEnterTapAction() {
+    return null;
+  }
+
+  Widget getChildWidget() {
+    return null;
+  }
 }
 
-class HyperLinkMenuItemWidget extends VerticalMenuItem {
+class HyperLinkMenuItem extends VerticalMenuItem {
   final String url;
   final String displayText;
-
-  final TextStyle nonFocusStyle = const TextStyle(
-    fontWeight: FontWeight.normal,
-    color: Colors.blue,
-  );
 
   final TextStyle focusStyle = const TextStyle(
     fontWeight: FontWeight.normal,
@@ -62,12 +126,36 @@ class HyperLinkMenuItemWidget extends VerticalMenuItem {
     decoration: TextDecoration.underline,
   );
 
-  const HyperLinkMenuItemWidget(
-      {Key key, @required this.url, @required this.displayText, bool autoFocus=false})
+  const HyperLinkMenuItem(
+      {Key key,
+      @required this.url,
+      @required this.displayText,
+      bool autoFocus = false,
+      String debugLabel = "HyperLinkMenuItem",
+      VoidCallback onEnterTapAction})
       : assert(url != null),
         assert(displayText != null),
-        super(FocusNodeWidgetType.hyperLinkWidget,
-            key: key, autoFocus: autoFocus);
+        super(
+          key: key,
+          focusNodeWidgetType: _FocusNodeWidgetType.hyperLinkWidget,
+          autoFocus: autoFocus,
+          debugLabel: debugLabel,
+        );
+
+  @override
+  Widget getChildWidget() {
+    Text underLinedText = Text(
+      displayText,
+      style: focusStyle,
+    );
+
+    return underLinedText;
+  }
+
+  @override
+  void onEnterTapAction() {
+    _launchUrl();
+  }
 
   Future _launchUrl() async {
     if (await canLaunch(url)) {
@@ -76,48 +164,51 @@ class HyperLinkMenuItemWidget extends VerticalMenuItem {
       throw 'Could not launch $url';
     }
   }
-
-  @override
-  Widget build(BuildContext context) {
-    Text textWhenNotFocused = Text(
-      displayText,
-      style: nonFocusStyle,
-    );
-
-    Text textWhenFocused = Text(
-      displayText,
-      style: focusStyle,
-    );
-
-    _FocusNodeEnterTapActionableWidget focusableEnterTapActionableWidget =
-        _FocusNodeEnterTapActionableWidget(
-      childWhenNotFocused: textWhenNotFocused,
-      childWhenFocused: textWhenFocused,
-      onEnterTapAction: _launchUrl,
-      autoFocus: autoFocus,
-    );
-
-    return focusableEnterTapActionableWidget;
-  }
 }
 
 class _FocusNodeEnterTapActionableWidget extends StatefulWidget {
   final String debugLabel;
   final bool autoFocus;
-  final Widget childWhenNotFocused;
-  final Widget childWhenFocused;
+  final Widget child;
   final VoidCallback onEnterTapAction;
+
+  final Color nonFocusedBackgroundColor;
+  final Color focusedBackgroundColor;
+  final AlignmentGeometry alignment;
+  final BoxConstraints constraints;
+  final Decoration nonFocusedBackgroundDecoration;
+  final Decoration focusedBackgroundDecoration;
+  final EdgeInsetsGeometry padding;
+  final Decoration nonFocusedForegroundDecoration;
+  final Decoration focusedForegroundDecoration;
+  final double width;
+  final double height;
+  final EdgeInsetsGeometry margin;
+  final Matrix4 transform;
 
   _FocusNodeEnterTapActionableWidget(
       {Key key,
       @required this.onEnterTapAction,
-      this.debugLabel = "_FocusNodeEnterTapActionableWidget",
-      this.autoFocus = false,
-      @required this.childWhenNotFocused,
-      this.childWhenFocused})
-      : assert(debugLabel != null),
+      @required this.debugLabel,
+      @required this.autoFocus,
+      @required this.child,
+      @required this.nonFocusedBackgroundColor,
+      @required this.focusedBackgroundColor,
+      @required this.alignment,
+      @required this.constraints,
+      @required this.nonFocusedBackgroundDecoration,
+      @required this.focusedBackgroundDecoration,
+      @required this.padding,
+      @required this.nonFocusedForegroundDecoration,
+      @required this.focusedForegroundDecoration,
+      @required this.width,
+      @required this.height,
+      @required this.margin,
+      @required this.transform})
+      : assert(onEnterTapAction != null),
+        assert(debugLabel != null),
         assert(autoFocus != null),
-        assert(childWhenNotFocused != null),
+        assert(child != null),
 //        assert(!(childWhenNotFocused is RawMaterialButton)),
 //        assert(!(childWhenNotFocused is TextField)),
         super(key: key);
@@ -169,21 +260,36 @@ class _FocusableEnterTapActionableWidget
     }
   }
 
+  Widget _getEnabledChild(bool hasFocus) {
+    Container container = Container(
+      child: widget.child,
+      color: hasFocus
+          ? widget.focusedBackgroundColor
+          : widget.nonFocusedBackgroundColor,
+      alignment: widget.alignment,
+      constraints: widget.constraints,
+      decoration: hasFocus
+          ? widget.focusedBackgroundDecoration
+          : widget.nonFocusedBackgroundDecoration,
+      padding: widget.padding,
+      foregroundDecoration: hasFocus
+          ? widget.focusedForegroundDecoration
+          : widget.nonFocusedForegroundDecoration,
+      width: widget.width,
+      height: widget.height,
+      margin: widget.margin,
+      transform: widget.transform,
+    );
+
+    return container;
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (widget.onEnterTapAction == null) {
-      // TODO: show in disabled mode
-      return widget.childWhenNotFocused;
-    }
-
     Builder builder = Builder(builder: (BuildContext context) {
       final FocusNode focusNode = Focus.of(context);
       final hasFocus = focusNode.hasFocus;
-      final Widget effectiveChild = (widget.childWhenFocused == null)
-          ? (widget.childWhenNotFocused)
-          : (hasFocus ? widget.childWhenFocused : widget.childWhenNotFocused);
-      //TODO: need to show the child widget in focused state
-      //TODO: need to show the child widget in non focused state
+
       GestureDetector gestureDetector = GestureDetector(
           onTap: () {
             if (!hasFocus) {
@@ -193,7 +299,7 @@ class _FocusableEnterTapActionableWidget
               widget.onEnterTapAction();
             }
           },
-          child: effectiveChild);
+          child: _getEnabledChild(hasFocus));
 
       return gestureDetector;
     });
