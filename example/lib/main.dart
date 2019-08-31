@@ -12,31 +12,30 @@ class MenuForAndroidTV extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
-    HyperLinkWidget flutterLink = HyperLinkWidget(
+    HyperLinkMenuItemWidget flutterLink = HyperLinkMenuItemWidget(
       displayText: 'Flutter - Beautiful native apps in record time',
       url: 'https://flutter.dev/',
       autoFocus: true,
     );
 
-    HyperLinkWidget androidDevelopersLink = HyperLinkWidget(
+    HyperLinkMenuItemWidget androidDevelopersLink = HyperLinkMenuItemWidget(
       displayText: 'Android Developers',
       url: 'https://developer.android.com/',
     );
 
-    HyperLinkWidget googleLink = HyperLinkWidget(
+    HyperLinkMenuItemWidget googleLink = HyperLinkMenuItemWidget(
       displayText: 'Google',
       url: 'https://www.google.com/',
     );
 
-    Column column = Column(
-      children: <Widget>[flutterLink, androidDevelopersLink, googleLink],
+    VerticalMenuForAndroidTV verticalMenuForAndroidTV =
+        VerticalMenuForAndroidTV(
+      menuItems: [flutterLink, androidDevelopersLink, googleLink],
     );
-
-    Center center = Center(child: column);
 
     DefaultTextStyle menu = DefaultTextStyle(
       style: textTheme.display1,
-      child: center,
+      child: verticalMenuForAndroidTV,
     );
 
     DefaultTextStyle instructions =

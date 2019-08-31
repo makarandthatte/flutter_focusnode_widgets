@@ -4,10 +4,52 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class HyperLinkWidget extends StatelessWidget {
+class VerticalMenuForAndroidTV extends StatelessWidget {
+  final List<VerticalMenuItem> menuItems;
+
+  const VerticalMenuForAndroidTV({
+    Key key,
+    @required this.menuItems,
+  })  : assert(menuItems != null),
+        assert(menuItems.length > 0),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    assert(menuItems.elementAt(0).autoFocus);
+
+    Column column = Column(
+      children: menuItems,
+    );
+
+    Center center = Center(child: column);
+
+    SingleChildScrollView singleChildScrollView = SingleChildScrollView(
+      child: center,
+    );
+
+    return singleChildScrollView;
+  }
+}
+
+enum FocusNodeWidgetType { hyperLinkWidget, checkBoxWidget }
+
+abstract class VerticalMenuItem extends StatelessWidget {
+  final FocusNodeWidgetType focusNodeWidgetType;
+  final bool autoFocus;
+
+  const VerticalMenuItem(
+    this.focusNodeWidgetType, {
+    Key key,
+    this.autoFocus = false,
+  })  : assert(focusNodeWidgetType != null),
+        assert(autoFocus != null),
+        super(key: key);
+}
+
+class HyperLinkMenuItemWidget extends VerticalMenuItem {
   final String url;
   final String displayText;
-  final bool autoFocus;
 
   final TextStyle nonFocusStyle = const TextStyle(
     fontWeight: FontWeight.normal,
@@ -20,14 +62,12 @@ class HyperLinkWidget extends StatelessWidget {
     decoration: TextDecoration.underline,
   );
 
-  const HyperLinkWidget(
-      {Key key,
-      @required this.url,
-      @required this.displayText,
-      this.autoFocus = false})
+  const HyperLinkMenuItemWidget(
+      {Key key, @required this.url, @required this.displayText, bool autoFocus=false})
       : assert(url != null),
         assert(displayText != null),
-        super(key: key);
+        super(FocusNodeWidgetType.hyperLinkWidget,
+            key: key, autoFocus: autoFocus);
 
   Future _launchUrl() async {
     if (await canLaunch(url)) {
@@ -78,8 +118,8 @@ class _FocusNodeEnterTapActionableWidget extends StatefulWidget {
       : assert(debugLabel != null),
         assert(autoFocus != null),
         assert(childWhenNotFocused != null),
-        assert(!(childWhenNotFocused is RawMaterialButton)),
-        assert(!(childWhenNotFocused is TextField)),
+//        assert(!(childWhenNotFocused is RawMaterialButton)),
+//        assert(!(childWhenNotFocused is TextField)),
         super(key: key);
 
   @override
