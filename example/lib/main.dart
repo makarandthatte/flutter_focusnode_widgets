@@ -31,6 +31,16 @@ class MenuForAndroidTV extends StatelessWidget {
     VerticalMenuForAndroidTV verticalMenuForAndroidTV =
         VerticalMenuForAndroidTV(
       menuItems: [flutterLink, androidDevelopersLink, googleLink],
+      focusedBackgroundDecoration: BoxDecoration(
+        border: Border.all(color: Colors.amber[900], width: 2),
+      ),
+      alignment: Alignment.center,
+      constraints: BoxConstraints(
+        maxHeight: 40,
+        maxWidth: 700,
+        minHeight: 10,
+        minWidth: 100,
+      ),
     );
 
     DefaultTextStyle menu = DefaultTextStyle(
