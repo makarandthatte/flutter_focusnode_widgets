@@ -1,8 +1,9 @@
 name: focusnode_widgets
-description: Reusable focus node widgets. Can be controlled with touch screen or keyboard or Remote Control (e.g. Android TV).
+description: Reusable focus node widgets. Can be controlled with
+  touch screen or keyboard or Remote Control (e.g. Android TV).
 version: 0.0.1
-author:
-homepage:
+author: Makarand Thatte <makthatte2010@gmail.com>
+homepage: https://github.com/makarandthatte/flutter_focusnode_widgets
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

@@ -149,8 +149,9 @@ class _FocusableEnterTapActionableWidget
             if (!hasFocus) {
               _gestureDetectorRequestedFocus = true;
               focusNode.requestFocus();
+            } else {
+              widget.onEnterTapAction();
             }
-            //onEnterTapAction();
           },
           child: effectiveChild);
 
