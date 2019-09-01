@@ -174,11 +174,6 @@ class HyperLinkMenuItem extends VerticalMenuItem {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      final snackBar = SnackBar(
-        content: Text('No browser available, can\'t visit $url'),
-      );
-      Scaffold.of(context).showSnackBar(snackBar);
-
       throw 'Could not launch $url';
     }
   }
