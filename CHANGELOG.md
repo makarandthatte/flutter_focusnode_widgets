@@ -1,3 +1,7 @@
+## [0.0.3] - 1 Sep 2019
+
+* Bug fix, VerticalMenuItem needs to extend from StatelessWidget
+
 ## [0.0.2] - 31 Aug 2019
 
 * VerticalMenuForAndroidTV and HyperLinkMenuItem supported,

@@ -52,7 +52,7 @@ class VerticalMenuForAndroidTV extends StatelessWidget {
     void constructMenuItem(VerticalMenuItem menuItem) {
       _FocusNodeEnterTapActionableWidget focusableEnterTapActionableWidget =
           _FocusNodeEnterTapActionableWidget(
-        child: menuItem.getChildWidget(),
+        child: menuItem.build(context),
         onEnterTapAction: menuItem.onEnterTapAction,
         autoFocus: menuItem.autoFocus,
         debugLabel: menuItem.debugLabel,
@@ -93,7 +93,7 @@ class VerticalMenuForAndroidTV extends StatelessWidget {
 
 enum _FocusNodeWidgetType { hyperLinkWidget, checkboxListTileWidget }
 
-abstract class VerticalMenuItem {
+abstract class VerticalMenuItem extends StatelessWidget {
   final _FocusNodeWidgetType focusNodeWidgetType;
   final bool autoFocus;
   final String debugLabel;
@@ -108,10 +108,6 @@ abstract class VerticalMenuItem {
         super();
 
   void onEnterTapAction() {
-    return null;
-  }
-
-  Widget getChildWidget() {
     return null;
   }
 }
@@ -143,16 +139,6 @@ class HyperLinkMenuItem extends VerticalMenuItem {
         );
 
   @override
-  Widget getChildWidget() {
-    Text underLinedText = Text(
-      displayText,
-      style: focusStyle,
-    );
-
-    return underLinedText;
-  }
-
-  @override
   void onEnterTapAction() {
     _launchUrl();
   }
@@ -163,6 +149,16 @@ class HyperLinkMenuItem extends VerticalMenuItem {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Text underLinedText = Text(
+      displayText,
+      style: focusStyle,
+    );
+
+    return underLinedText;
   }
 }
 
