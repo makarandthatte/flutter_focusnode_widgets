@@ -30,14 +30,38 @@ class MenuForAndroidTV extends StatelessWidget {
 
     Text nonFocusableText = Text('Non focusable text item');
 
+    Text nonFocusableText2 = Text('Non focusable text item 2');
+
+    void _handleEnterTapAction(BuildContext context) {
+      final snackBar = SnackBar(
+        content: Text('Yay! A SnackBar!'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            // Some code to undo the change.
+          },
+        ),
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
+
+    FocusableSimpleMenuItem focusableSimpleMenuItem = FocusableSimpleMenuItem(
+      child: Text('Click, Tap or Press Enter/ OK to show SnackBar'),
+      enterTapActionCallback: _handleEnterTapAction,
+    );
+
+    Text instructions = Text(_instructions);
+
     VerticalMenuForAndroidTV verticalMenuForAndroidTV =
         VerticalMenuForAndroidTV(
       menuItems: [
         nonFocusableText,
         flutterLink,
-        nonFocusableText,
+        nonFocusableText2,
         androidDevelopersLink,
-        googleLink
+        focusableSimpleMenuItem,
+        googleLink,
+        instructions,
       ],
       focusedBackgroundDecoration: BoxDecoration(
         border: Border.all(color: Colors.amber[900], width: 2),
@@ -52,19 +76,15 @@ class MenuForAndroidTV extends StatelessWidget {
     );
 
     DefaultTextStyle menu = DefaultTextStyle(
-      style: textTheme.display1,
+      style: textTheme.headline,
       child: verticalMenuForAndroidTV,
     );
-
-    DefaultTextStyle instructions =
-        DefaultTextStyle(style: textTheme.display1, child: Text(_instructions));
 
     return MaterialApp(
       title: _title,
       home: Scaffold(
         appBar: AppBar(title: Text(_title)),
         body: menu,
-        bottomSheet: instructions,
       ),
     );
   }

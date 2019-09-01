@@ -4,6 +4,10 @@
 
 * VerticalMenuForAndroidTV now accepts list of StatelessWidget as menu items
 
+* Support of FocusableSimpleMenuItem which can be added to VerticalMenuForAndroidTV
+
+* Support of adding any widget to VerticalMenuForAndroidTV, it won't get focused
+
 ## [0.0.3] - 1 Sep 2019
 
 * Bug fix, VerticalMenuItem needs to extend from StatelessWidget
