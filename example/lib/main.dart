@@ -3,10 +3,19 @@ import 'package:focusnode_widgets/focusnode_widgets.dart';
 
 void main() => runApp(MenuForAndroidTV());
 
-class MenuForAndroidTV extends StatelessWidget {
+class MenuForAndroidTV extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _MenuForAndroidTV();
+  }
+}
+
+class _MenuForAndroidTV extends State<MenuForAndroidTV> {
   final String _title = 'focusnode_widgets example for Android TV';
   final String _instructions =
       'Use up down arrows to navigate and Enter (OK) to open the URL';
+
+  bool checked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +27,19 @@ class MenuForAndroidTV extends StatelessWidget {
       autoFocus: true,
     );
 
-    HyperLinkMenuItem androidDevelopersLink = HyperLinkMenuItem(
-      displayText: 'Android Developers',
-      url: 'https://developer.android.com/',
-    );
+    void _onChanged(BuildContext context, bool selected) {
+      checked = selected;
+      setState(() {});
+    }
 
-    HyperLinkMenuItem googleLink = HyperLinkMenuItem(
-      displayText: 'Google',
-      url: 'https://www.google.com/',
+    CheckboxListTileMenuItem checkboxListTileMenuItem =
+        CheckboxListTileMenuItem(
+      title: DefaultTextStyle(
+          style: textTheme.headline,
+          child: Text('I accept Terms and Conditions')),
+      enterTapActionCallback: _onChanged,
+      value: checked,
+      controlAffinity: ListTileControlAffinity.leading,
     );
 
     Text nonFocusableText = Text('Non focusable text item');
@@ -58,9 +72,8 @@ class MenuForAndroidTV extends StatelessWidget {
         nonFocusableText,
         flutterLink,
         nonFocusableText2,
-        androidDevelopersLink,
+        checkboxListTileMenuItem,
         focusableSimpleMenuItem,
-        googleLink,
         instructions,
       ],
       focusedBackgroundDecoration: BoxDecoration(

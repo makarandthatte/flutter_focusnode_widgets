@@ -46,11 +46,11 @@ class VerticalMenuForAndroidTV extends StatelessWidget {
     List<Widget> widgetList = List<Widget>();
 
     void constructMenuItem(StatelessWidget menuItem) {
-      bool menuItemIsVerticalMenuItem = menuItem is VerticalMenuItem;
+      bool menuItemIsVerticalMenuItem = menuItem is _VerticalMenuItem;
       Widget widget;
 
       if (menuItemIsVerticalMenuItem) {
-        VerticalMenuItem verticalMenuItem = menuItem as VerticalMenuItem;
+        _VerticalMenuItem verticalMenuItem = menuItem as _VerticalMenuItem;
 
         widget = _FocusNodeEnterTapActionableWidget(
           child: menuItem.build(context),
@@ -94,26 +94,25 @@ class VerticalMenuForAndroidTV extends StatelessWidget {
   }
 }
 
-abstract class VerticalMenuItem extends StatelessWidget {
+abstract class _VerticalMenuItem extends StatelessWidget {
   final bool autoFocus;
   final String debugLabel;
 
-  const VerticalMenuItem({
+  const _VerticalMenuItem({
     Key key,
     @required this.autoFocus,
     @required this.debugLabel,
   })  : assert(autoFocus != null),
         super();
 
-  void onEnterTapAction(BuildContext context) {
-    return null;
-  }
+  @protected
+  void onEnterTapAction(BuildContext context);
 }
 
 /// Signature of callbacks that have BuildContext and return no data.
 typedef VoidBuildContext = void Function(BuildContext context);
 
-class FocusableSimpleMenuItem extends VerticalMenuItem {
+class FocusableSimpleMenuItem extends _VerticalMenuItem {
   final Widget child;
   final VoidBuildContext enterTapActionCallback;
 
@@ -140,7 +139,71 @@ class FocusableSimpleMenuItem extends VerticalMenuItem {
   }
 }
 
-class HyperLinkMenuItem extends VerticalMenuItem {
+typedef VoidBuildContextValue = void Function(BuildContext context, bool value);
+
+class CheckboxListTileMenuItem extends _VerticalMenuItem {
+  final bool value;
+  final VoidBuildContextValue enterTapActionCallback;
+  final Color activeColor;
+  final Widget title;
+  final Widget subtitle;
+  final Widget secondary;
+  final bool isThreeLine;
+  final bool dense;
+  final bool selected;
+  final ListTileControlAffinity controlAffinity;
+
+  const CheckboxListTileMenuItem({
+    Key key,
+    @required this.value,
+    @required this.enterTapActionCallback,
+    this.activeColor,
+    this.title,
+    this.subtitle,
+    this.isThreeLine = false,
+    this.dense,
+    this.secondary,
+    this.selected = false,
+    this.controlAffinity = ListTileControlAffinity.platform,
+    bool autoFocus = false,
+    String debugLabel = "CheckboxListTileMenuItem",
+  })  : assert(value != null),
+        assert(isThreeLine != null),
+        assert(!isThreeLine || subtitle != null),
+        assert(selected != null),
+        assert(controlAffinity != null),
+        super(key: key, autoFocus: autoFocus, debugLabel: debugLabel);
+
+  @override
+  void onEnterTapAction(BuildContext context) {
+    print("onEnterTapAction");
+    enterTapActionCallback(context, !value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    void _onChanged(bool newValue) {
+      enterTapActionCallback(context, newValue);
+    }
+
+    CheckboxListTile checkboxListTile = CheckboxListTile(
+      key: key,
+      value: value,
+      onChanged: _onChanged,
+      activeColor: activeColor,
+      title: title,
+      subtitle: subtitle,
+      isThreeLine: isThreeLine,
+      dense: dense,
+      secondary: secondary,
+      selected: selected,
+      controlAffinity: controlAffinity,
+    );
+    return checkboxListTile;
+  }
+}
+
+class HyperLinkMenuItem extends _VerticalMenuItem {
   final String url;
   final String displayText;
 
@@ -174,7 +237,14 @@ class HyperLinkMenuItem extends VerticalMenuItem {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      throw 'Could not launch $url';
+      final snackBar = SnackBar(
+        content: Text('Could not launch $url'),
+      );
+      ScaffoldState scaffoldState = Scaffold.of(context, nullOk: true);
+      scaffoldState?.showSnackBar(snackBar);
+      if (scaffoldState == null) {
+        throw 'Could not launch $url';
+      }
     }
   }
 

@@ -1,3 +1,8 @@
+## [0.0.5] - 1 Sep 2019
+
+* Support of CheckboxListTileMenuItem
+
+
 ## [0.0.4] - 1 Sep 2019
 
 * Support of adding any StatelessWidget to VerticalMenu, It won't receive focus.
