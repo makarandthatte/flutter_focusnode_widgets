@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class VerticalMenuForAndroidTV extends StatelessWidget {
-  final List<VerticalMenuItem> menuItems;
+  final List<StatelessWidget> menuItems;
 
   final Color nonFocusedBackgroundColor;
   final Color focusedBackgroundColor;
@@ -43,19 +43,23 @@ class VerticalMenuForAndroidTV extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert(menuItems.elementAt(0).autoFocus);
-
     List<_FocusNodeEnterTapActionableWidget>
         _focusNodeEnterTapActionableWidgetList =
         List<_FocusNodeEnterTapActionableWidget>();
 
-    void constructMenuItem(VerticalMenuItem menuItem) {
+    void constructMenuItem(StatelessWidget menuItem) {
+      bool menuItemIsVerticalMenuItem = menuItem is VerticalMenuItem;
+      VerticalMenuItem verticalMenuItem;
+
+      verticalMenuItem =
+          menuItemIsVerticalMenuItem ? menuItem as VerticalMenuItem : null;
+
       _FocusNodeEnterTapActionableWidget focusableEnterTapActionableWidget =
           _FocusNodeEnterTapActionableWidget(
         child: menuItem.build(context),
-        onEnterTapAction: menuItem.onEnterTapAction,
-        autoFocus: menuItem.autoFocus,
-        debugLabel: menuItem.debugLabel,
+        handleEnterTapAction: verticalMenuItem?.onEnterTapAction,
+        autoFocus: verticalMenuItem?.autoFocus,
+        debugLabel: verticalMenuItem?.debugLabel,
         nonFocusedForegroundDecoration: nonFocusedForegroundDecoration,
         transform: transform,
         nonFocusedBackgroundColor: nonFocusedBackgroundColor,
@@ -166,7 +170,7 @@ class _FocusNodeEnterTapActionableWidget extends StatefulWidget {
   final String debugLabel;
   final bool autoFocus;
   final Widget child;
-  final VoidCallback onEnterTapAction;
+  final VoidCallback _handleEnterTapAction;
 
   final Color nonFocusedBackgroundColor;
   final Color focusedBackgroundColor;
@@ -182,31 +186,27 @@ class _FocusNodeEnterTapActionableWidget extends StatefulWidget {
   final EdgeInsetsGeometry margin;
   final Matrix4 transform;
 
-  _FocusNodeEnterTapActionableWidget(
-      {Key key,
-      @required this.onEnterTapAction,
-      @required this.debugLabel,
-      @required this.autoFocus,
-      @required this.child,
-      @required this.nonFocusedBackgroundColor,
-      @required this.focusedBackgroundColor,
-      @required this.alignment,
-      @required this.constraints,
-      @required this.nonFocusedBackgroundDecoration,
-      @required this.focusedBackgroundDecoration,
-      @required this.padding,
-      @required this.nonFocusedForegroundDecoration,
-      @required this.focusedForegroundDecoration,
-      @required this.width,
-      @required this.height,
-      @required this.margin,
-      @required this.transform})
-      : assert(onEnterTapAction != null),
-        assert(debugLabel != null),
-        assert(autoFocus != null),
-        assert(child != null),
-//        assert(!(childWhenNotFocused is RawMaterialButton)),
-//        assert(!(childWhenNotFocused is TextField)),
+  _FocusNodeEnterTapActionableWidget({
+    Key key,
+    VoidCallback handleEnterTapAction,
+    this.debugLabel,
+    @required this.autoFocus,
+    @required this.child,
+    @required this.nonFocusedBackgroundColor,
+    @required this.focusedBackgroundColor,
+    @required this.alignment,
+    @required this.constraints,
+    @required this.nonFocusedBackgroundDecoration,
+    @required this.focusedBackgroundDecoration,
+    @required this.padding,
+    @required this.nonFocusedForegroundDecoration,
+    @required this.focusedForegroundDecoration,
+    @required this.width,
+    @required this.height,
+    @required this.margin,
+    @required this.transform,
+  })  : assert(child != null),
+        _handleEnterTapAction = handleEnterTapAction,
         super(key: key);
 
   @override
@@ -220,8 +220,6 @@ class _FocusableEnterTapActionableWidget
   bool _gestureDetectorRequestedFocus = false;
 
   bool _handleOnKey(FocusNode node, RawKeyEvent event) {
-    assert(widget.onEnterTapAction != null);
-
     if (event is RawKeyDownEvent) {
       print(
           '_handleKeyPress: Focus node ${node.debugLabel} got key event: ${event.logicalKey}');
@@ -234,12 +232,19 @@ class _FocusableEnterTapActionableWidget
         node.focusInDirection(direction);
         return true;
       } else if (event.logicalKey == LogicalKeyboardKey.enter) {
-        widget.onEnterTapAction();
-        return true;
+        return _handleEnterTapAction();
       }
     }
 
     return false;
+  }
+
+  bool _handleEnterTapAction() {
+    if (widget._handleEnterTapAction == null) {
+      return false;
+    }
+    widget._handleEnterTapAction();
+    return true;
   }
 
   void _handleOnFocusChange(bool focusGained) {
@@ -247,7 +252,7 @@ class _FocusableEnterTapActionableWidget
       print("focus gained by " + widget.debugLabel);
       if (_gestureDetectorRequestedFocus) {
         _gestureDetectorRequestedFocus = false;
-        widget.onEnterTapAction();
+        _handleEnterTapAction();
       }
       //TODO: need to show the child widget in focused state
     } else {
@@ -292,7 +297,7 @@ class _FocusableEnterTapActionableWidget
               _gestureDetectorRequestedFocus = true;
               focusNode.requestFocus();
             } else {
-              widget.onEnterTapAction();
+              _handleEnterTapAction();
             }
           },
           child: _getEnabledChild(hasFocus));
@@ -302,7 +307,7 @@ class _FocusableEnterTapActionableWidget
 
     Focus focusableEnterTapActionableChild = Focus(
       onFocusChange: _handleOnFocusChange,
-      autofocus: widget.autoFocus,
+      autofocus: widget.autoFocus == null ? false : widget.autoFocus,
       onKey: _handleOnKey,
       debugLabel: widget.debugLabel,
       child: builder,

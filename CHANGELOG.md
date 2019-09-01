@@ -1,3 +1,9 @@
+## [0.0.4] - 1 Sep 2019
+
+* Support of adding any StatelessWidget to VerticalMenu, It won't receive focus.
+
+* VerticalMenuForAndroidTV now accepts list of StatelessWidget as menu items
+
 ## [0.0.3] - 1 Sep 2019
 
 * Bug fix, VerticalMenuItem needs to extend from StatelessWidget

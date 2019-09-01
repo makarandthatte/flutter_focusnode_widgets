@@ -28,9 +28,17 @@ class MenuForAndroidTV extends StatelessWidget {
       url: 'https://www.google.com/',
     );
 
+    Text nonFocusableText = Text('Non focusable text item');
+
     VerticalMenuForAndroidTV verticalMenuForAndroidTV =
         VerticalMenuForAndroidTV(
-      menuItems: [flutterLink, androidDevelopersLink, googleLink],
+      menuItems: [
+        nonFocusableText,
+        flutterLink,
+        nonFocusableText,
+        androidDevelopersLink,
+        googleLink
+      ],
       focusedBackgroundDecoration: BoxDecoration(
         border: Border.all(color: Colors.amber[900], width: 2),
       ),
