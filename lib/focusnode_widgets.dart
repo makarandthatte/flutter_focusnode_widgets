@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class VerticalMenuForAndroidTV extends StatelessWidget {
-  final List<StatelessWidget> menuItems;
+  final List<Widget> menuItems;
 
   final Color nonFocusedBackgroundColor;
   final Color focusedBackgroundColor;
@@ -45,15 +45,14 @@ class VerticalMenuForAndroidTV extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> widgetList = List<Widget>();
 
-    void constructMenuItem(StatelessWidget menuItem) {
-      bool menuItemIsVerticalMenuItem = menuItem is _VerticalMenuItem;
+    void constructMenuItem(Widget menuItem) {
       Widget widget;
 
-      if (menuItemIsVerticalMenuItem) {
-        _VerticalMenuItem verticalMenuItem = menuItem as _VerticalMenuItem;
+      if (menuItem is _VerticalMenuItem) {
+        _VerticalMenuItem verticalMenuItem = menuItem;
 
         widget = _FocusNodeEnterTapActionableWidget(
-          child: menuItem.build(context),
+          child: verticalMenuItem.build(context),
           handleEnterTapAction: verticalMenuItem?.onEnterTapAction,
           autoFocus: verticalMenuItem?.autoFocus,
           debugLabel: verticalMenuItem?.debugLabel,
@@ -72,7 +71,7 @@ class VerticalMenuForAndroidTV extends StatelessWidget {
           alignment: alignment,
         );
       } else {
-        widget = menuItem.build(context);
+        widget = menuItem;
       }
 
       widgetList.add(widget);

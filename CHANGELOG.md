@@ -1,3 +1,8 @@
+## [0.0.6] - 1 Sep 2019
+
+* It should be possible to accept any Widget in VerticalMenuForAndroidTV
+
+
 ## [0.0.5] - 1 Sep 2019
 
 * Support of CheckboxListTileMenuItem
