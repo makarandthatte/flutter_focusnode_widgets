@@ -56,6 +56,7 @@ class VerticalMenuForAndroidTV extends StatelessWidget {
           handleEnterTapAction: verticalMenuItem?.onEnterTapAction,
           autoFocus: verticalMenuItem?.autoFocus,
           debugLabel: verticalMenuItem?.debugLabel,
+          voidTrapKeyEvent: verticalMenuItem?.voidTrapKeyEvent,
           nonFocusedForegroundDecoration: nonFocusedForegroundDecoration,
           transform: transform,
           nonFocusedBackgroundColor: nonFocusedBackgroundColor,
@@ -101,11 +102,15 @@ abstract class _VerticalMenuItem extends StatelessWidget {
     Key key,
     @required this.autoFocus,
     @required this.debugLabel,
+    this.voidTrapKeyEvent,
   })  : assert(autoFocus != null),
         super();
 
   @protected
   void onEnterTapAction(BuildContext context);
+
+  @protected
+  final VoidTrapKeyEvent voidTrapKeyEvent;
 }
 
 /// Signature of callbacks that have BuildContext and return no data.
@@ -115,14 +120,28 @@ class FocusableSimpleMenuItem extends _VerticalMenuItem {
   final Widget child;
   final VoidBuildContext enterTapActionCallback;
 
-  const FocusableSimpleMenuItem({
+  const FocusableSimpleMenuItem(
+      {Key key,
+      @required this.child,
+      bool autoFocus = false,
+      String debugLabel = "FocusableSimpleMenuItem",
+      this.enterTapActionCallback})
+      : assert(child != null),
+        super(autoFocus: autoFocus, debugLabel: debugLabel);
+
+  @protected
+  const FocusableSimpleMenuItem.forPrintKey({
     Key key,
     @required this.child,
     bool autoFocus = false,
     String debugLabel = "FocusableSimpleMenuItem",
     this.enterTapActionCallback,
+    @required VoidTrapKeyEvent voidTrapKeyEvent,
   })  : assert(child != null),
-        super(autoFocus: autoFocus, debugLabel: debugLabel);
+        super(
+            autoFocus: autoFocus,
+            debugLabel: debugLabel,
+            voidTrapKeyEvent: voidTrapKeyEvent);
 
   @override
   void onEnterTapAction(BuildContext context) {
@@ -136,6 +155,23 @@ class FocusableSimpleMenuItem extends _VerticalMenuItem {
   Widget build(BuildContext context) {
     return child;
   }
+}
+
+typedef VoidTrapKeyEvent = void Function(
+    BuildContext context, RawKeyEvent event);
+
+class KeyPrintMenuItem extends FocusableSimpleMenuItem {
+  KeyPrintMenuItem({
+    Key key,
+    @required Widget child,
+    bool autoFocus = false,
+    String debugLabel = "KeyPrintMenuItem",
+    @required VoidTrapKeyEvent voidTrapKeyEvent,
+  }) : super.forPrintKey(
+            autoFocus: autoFocus,
+            debugLabel: debugLabel,
+            child: child,
+            voidTrapKeyEvent: voidTrapKeyEvent);
 }
 
 typedef VoidBuildContextValue = void Function(BuildContext context, bool value);
@@ -263,6 +299,7 @@ class _FocusNodeEnterTapActionableWidget extends StatefulWidget {
   final bool autoFocus;
   final Widget child;
   final VoidBuildContext _handleEnterTapAction;
+  final VoidTrapKeyEvent voidTrapKeyEvent;
 
   final Color nonFocusedBackgroundColor;
   final Color focusedBackgroundColor;
@@ -297,6 +334,7 @@ class _FocusNodeEnterTapActionableWidget extends StatefulWidget {
     @required this.height,
     @required this.margin,
     @required this.transform,
+    this.voidTrapKeyEvent,
   })  : assert(child != null),
         _handleEnterTapAction = handleEnterTapAction,
         super(key: key);
@@ -312,6 +350,11 @@ class _FocusableEnterTapActionableWidget
   bool _gestureDetectorRequestedFocus = false;
 
   bool _handleOnKey(FocusNode node, RawKeyEvent event, BuildContext context) {
+    if (widget.voidTrapKeyEvent != null) {
+      widget.voidTrapKeyEvent(context, event);
+      return true;
+    }
+
     if (event is RawKeyDownEvent) {
       print(
           '_handleKeyPress: Focus node ${node.debugLabel} got key event: ${event.logicalKey}');

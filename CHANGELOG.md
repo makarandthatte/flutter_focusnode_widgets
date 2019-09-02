@@ -1,3 +1,7 @@
+## [0.0.7] - 2 Sep 2019
+
+* Support of KeyPrintMenuItem
+
 ## [0.0.6] - 1 Sep 2019
 
 * It should be possible to accept any Widget in VerticalMenuForAndroidTV

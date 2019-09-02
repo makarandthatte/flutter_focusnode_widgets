@@ -17,6 +17,8 @@ class _MenuForAndroidTV extends State<MenuForAndroidTV> {
 
   bool checked = false;
 
+  String keyLogText;
+
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
@@ -66,15 +68,41 @@ class _MenuForAndroidTV extends State<MenuForAndroidTV> {
 
     Text instructions = Text(_instructions);
 
+    void handleTrapKeyEvent(BuildContext context, RawKeyEvent event) {
+      if (event == null) {
+        return;
+      }
+      String eventString = event.toString(minLevel: DiagnosticLevel.debug);
+      if (keyLogText == null) {
+        keyLogText = '';
+      }
+      keyLogText += (eventString + '\n');
+      setState(() {});
+    }
+
+    Text keyLog = Text(keyLogText == null ? 'No key pressed yet' : keyLogText);
+
+    DefaultTextStyle keyLogShort = DefaultTextStyle(
+      style: textTheme.caption,
+      child: keyLog,
+    );
+
+    KeyPrintMenuItem keyPrintMenuItem = KeyPrintMenuItem(
+      child: Text('Press any key to see log below'),
+      voidTrapKeyEvent: handleTrapKeyEvent,
+      autoFocus: true,
+    );
+
     VerticalMenuForAndroidTV verticalMenuForAndroidTV =
         VerticalMenuForAndroidTV(
       menuItems: [
-        nonFocusableText,
-        flutterLink,
+        keyPrintMenuItem,
+        keyLogShort,
+/*        flutterLink,
         nonFocusableText2,
         checkboxListTileMenuItem,
         focusableSimpleMenuItem,
-        instructions,
+        instructions,*/
       ],
       focusedBackgroundDecoration: BoxDecoration(
         border: Border.all(color: Colors.amber[900], width: 2),
