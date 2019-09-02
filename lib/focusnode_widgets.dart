@@ -366,7 +366,8 @@ class _FocusableEnterTapActionableWidget
         TraversalDirection direction = TraversalDirection.up;
         node.focusInDirection(direction);
         return true;
-      } else if (event.logicalKey == LogicalKeyboardKey.enter) {
+      } else if (/*event.logicalKey == LogicalKeyboardKey.enter ||*/
+          event.logicalKey == LogicalKeyboardKey.select) {
         return _handleEnterTapAction(context);
       }
     }

@@ -1,3 +1,7 @@
+## [0.0.8] - 2 Sep 2019
+
+* Bug fix : D-PAD - center (logical select key was not handled)
+
 ## [0.0.7] - 2 Sep 2019
 
 * Support of KeyPrintMenuItem
