@@ -13,11 +13,9 @@ class MenuForAndroidTV extends StatefulWidget {
 class _MenuForAndroidTV extends State<MenuForAndroidTV> {
   final String _title = 'focusnode_widgets example for Android TV';
   final String _instructions =
-      'Use up down arrows to navigate and Enter (OK) to open the URL';
+      'Use DPAD up down arrow keyss to navigate and DPAD center key to open the URL';
 
   bool checked = false;
-
-  String keyLogText;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +23,8 @@ class _MenuForAndroidTV extends State<MenuForAndroidTV> {
 
     void launchUrl(BuildContext context) {
       // put code to launch the URL here
+      // on android TV url needs to be launched in WebView as per guidelines,
+      // browser can't be used
     }
 
     HyperLinkMenuItem flutterLink = HyperLinkMenuItem(
@@ -69,33 +69,6 @@ class _MenuForAndroidTV extends State<MenuForAndroidTV> {
     );
 
     Text instructions = Text(_instructions);
-/*
-    void handleTrapKeyEvent(BuildContext context, RawKeyEvent event) {
-      if (event == null) {
-        return;
-      }
-      String eventString = event.toString(minLevel: DiagnosticLevel.debug);
-      if (keyLogText == null) {
-        keyLogText = '';
-      }
-      keyLogText += (eventString + '\n');
-      setState(() {});
-    }
-
-    Text keyLog = Text(keyLogText == null ? 'No key pressed yet' : keyLogText);
-
-    DefaultTextStyle keyLogShort = DefaultTextStyle(
-      style: textTheme.caption,
-      child: keyLog,
-    );
-
-    KeyPrintMenuItem keyPrintMenuItem = KeyPrintMenuItem(
-      child: Text('Press any key to see log below'),
-      voidTrapKeyEvent: handleTrapKeyEvent,
-      autoFocus: true,
-    );
-
- */
 
     VerticalMenuForAndroidTV verticalMenuForAndroidTV =
         VerticalMenuForAndroidTV(

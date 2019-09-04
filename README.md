@@ -24,7 +24,7 @@ class MenuForAndroidTV extends StatefulWidget {
 class _MenuForAndroidTV extends State<MenuForAndroidTV> {
   final String _title = 'focusnode_widgets example for Android TV';
   final String _instructions =
-      'Use up down arrows to navigate and Enter (OK) to open the URL';
+      'Use DPAD up down arrow keyss to navigate and DPAD center key to open the URL';
 
   bool checked = false;
 
@@ -32,9 +32,15 @@ class _MenuForAndroidTV extends State<MenuForAndroidTV> {
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
+    void launchUrl(BuildContext context) {
+      // put code to launch the URL here
+      // on android TV url needs to be launched in WebView as per guidelines,
+      // browser can't be used
+    }
+
     HyperLinkMenuItem flutterLink = HyperLinkMenuItem(
       displayText: 'Flutter - Beautiful native apps in record time',
-      url: 'https://flutter.dev/',
+      launchUrl: launchUrl,
       autoFocus: true,
     );
 
@@ -52,8 +58,6 @@ class _MenuForAndroidTV extends State<MenuForAndroidTV> {
       value: checked,
       controlAffinity: ListTileControlAffinity.leading,
     );
-
-    Text nonFocusableText = Text('Non focusable text item');
 
     Text nonFocusableText2 = Text('Non focusable text item 2');
 
@@ -80,7 +84,8 @@ class _MenuForAndroidTV extends State<MenuForAndroidTV> {
     VerticalMenuForAndroidTV verticalMenuForAndroidTV =
         VerticalMenuForAndroidTV(
       menuItems: [
-        nonFocusableText,
+//        keyPrintMenuItem,
+//        keyLogShort,
         flutterLink,
         nonFocusableText2,
         checkboxListTileMenuItem,
@@ -113,6 +118,5 @@ class _MenuForAndroidTV extends State<MenuForAndroidTV> {
     );
   }
 }
-
 
 ```

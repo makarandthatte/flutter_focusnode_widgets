@@ -1,6 +1,7 @@
 ## [0.0.9] - 4 Sep 2019
 
-* Modified HyperLinkMenuItem to not to call the launchUrl internally, provided callback for the same
+* Modified HyperLinkMenuItem to not to call the launchUrl internally, provided callback for the same,
+on android TV url needs to be launched in WebView as per guidelines,
 
 ## [0.0.8] - 2 Sep 2019
 
