@@ -1,3 +1,7 @@
+## [0.0.9] - 4 Sep 2019
+
+* Modified HyperLinkMenuItem to not to call the launchUrl internally, provided callback for the same
+
 ## [0.0.8] - 2 Sep 2019
 
 * Bug fix : D-PAD - center (logical select key was not handled)

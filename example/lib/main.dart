@@ -23,9 +23,13 @@ class _MenuForAndroidTV extends State<MenuForAndroidTV> {
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
+    void launchUrl(BuildContext context) {
+      // put code to launch the URL here
+    }
+
     HyperLinkMenuItem flutterLink = HyperLinkMenuItem(
       displayText: 'Flutter - Beautiful native apps in record time',
-      url: 'https://flutter.dev/',
+      launchUrl: launchUrl,
       autoFocus: true,
     );
 
@@ -43,8 +47,6 @@ class _MenuForAndroidTV extends State<MenuForAndroidTV> {
       value: checked,
       controlAffinity: ListTileControlAffinity.leading,
     );
-
-    Text nonFocusableText = Text('Non focusable text item');
 
     Text nonFocusableText2 = Text('Non focusable text item 2');
 
@@ -67,7 +69,7 @@ class _MenuForAndroidTV extends State<MenuForAndroidTV> {
     );
 
     Text instructions = Text(_instructions);
-
+/*
     void handleTrapKeyEvent(BuildContext context, RawKeyEvent event) {
       if (event == null) {
         return;
@@ -93,16 +95,18 @@ class _MenuForAndroidTV extends State<MenuForAndroidTV> {
       autoFocus: true,
     );
 
+ */
+
     VerticalMenuForAndroidTV verticalMenuForAndroidTV =
         VerticalMenuForAndroidTV(
       menuItems: [
-        keyPrintMenuItem,
-        keyLogShort,
-/*        flutterLink,
+//        keyPrintMenuItem,
+//        keyLogShort,
+        flutterLink,
         nonFocusableText2,
         checkboxListTileMenuItem,
         focusableSimpleMenuItem,
-        instructions,*/
+        instructions,
       ],
       focusedBackgroundDecoration: BoxDecoration(
         border: Border.all(color: Colors.amber[900], width: 2),

@@ -2,7 +2,6 @@ library focusnode_widgets;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class VerticalMenuForAndroidTV extends StatelessWidget {
   final List<Widget> menuItems;
@@ -239,8 +238,8 @@ class CheckboxListTileMenuItem extends _VerticalMenuItem {
 }
 
 class HyperLinkMenuItem extends _VerticalMenuItem {
-  final String url;
   final String displayText;
+  final VoidBuildContext launchUrl;
 
   final TextStyle focusStyle = const TextStyle(
     fontWeight: FontWeight.normal,
@@ -250,13 +249,13 @@ class HyperLinkMenuItem extends _VerticalMenuItem {
 
   const HyperLinkMenuItem(
       {Key key,
-      @required this.url,
       @required this.displayText,
+      @required this.launchUrl,
       bool autoFocus = false,
       String debugLabel = "HyperLinkMenuItem",
       VoidCallback onEnterTapAction})
-      : assert(url != null),
-        assert(displayText != null),
+      : assert(displayText != null),
+        assert(launchUrl != null),
         super(
           key: key,
           autoFocus: autoFocus,
@@ -265,22 +264,10 @@ class HyperLinkMenuItem extends _VerticalMenuItem {
 
   @override
   void onEnterTapAction(BuildContext context) {
-    _launchUrl(context);
-  }
-
-  Future _launchUrl(BuildContext context) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      final snackBar = SnackBar(
-        content: Text('Could not launch $url'),
-      );
-      ScaffoldState scaffoldState = Scaffold.of(context, nullOk: true);
-      scaffoldState?.showSnackBar(snackBar);
-      if (scaffoldState == null) {
-        throw 'Could not launch $url';
-      }
+    if (launchUrl == null) {
+      return;
     }
+    launchUrl(context);
   }
 
   @override
